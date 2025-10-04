@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeBattle - Creature Arena</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="hud">
+            <div id="currency-display">
+                <span class="label">Coins:</span>
+                <span id="coins">150</span>
+            </div>
+            <div id="level-display">
+                <span class="label">Level:</span>
+                <span id="level">1</span>
+            </div>
+            <div id="health-display">
+                <div class="tower-health">
+                    <span class="label">Your Tower:</span>
+                    <div class="health-bar">
+                        <div id="player-health" class="health-fill" style="width: 100%"></div>
+                    </div>
+                    <span id="player-health-text">1500/1500</span>
+                </div>
+                <div class="tower-health">
+                    <span class="label">Enemy Tower:</span>
+                    <div class="health-bar">
+                        <div id="enemy-health" class="health-fill enemy" style="width: 100%"></div>
+                    </div>
+                    <span id="enemy-health-text">1500/1500</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="controls">
+            <button id="pause-btn" class="control-btn">⏸️ Pause</button>
+            <button id="restart-btn" class="control-btn">🔄 Restart</button>
+            <button id="sound-btn" class="control-btn">🔊 Sound</button>
+            <div class="difficulty-selector">
+                <label for="difficulty-select">Difficulty:</label>
+                <select id="difficulty-select">
+                    <option value="easy">Easy</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="creature-deck">
+            <div class="deck-title">Deploy Creatures (Click to Select) | Shortcuts: SPACE/ESC = Pause | R = Restart | M = Mute</div>
+            <div class="creatures">
+                <div class="creature-card" data-type="fire" data-cost="25">
+                    <div class="creature-icon fire-icon"></div>
+                    <div class="creature-name">Flamewing</div>
+                    <div class="creature-cost">💰 25</div>
+                    <div class="creature-stats">HP: 100 | DMG: 18</div>
+                </div>
+                <div class="creature-card" data-type="water" data-cost="30">
+                    <div class="creature-icon water-icon"></div>
+                    <div class="creature-name">Aquabeast</div>
+                    <div class="creature-cost">💰 30</div>
+                    <div class="creature-stats">HP: 150 | DMG: 15</div>
+                </div>
+                <div class="creature-card" data-type="earth" data-cost="40">
+                    <div class="creature-icon earth-icon"></div>
+                    <div class="creature-name">Rockgolem</div>
+                    <div class="creature-cost">💰 40</div>
+                    <div class="creature-stats">HP: 250 | DMG: 10</div>
+                </div>
+                <div class="creature-card" data-type="electric" data-cost="28">
+                    <div class="creature-icon electric-icon"></div>
+                    <div class="creature-name">Voltiger</div>
+                    <div class="creature-cost">💰 28</div>
+                    <div class="creature-stats">HP: 80 | DMG: 25</div>
+                </div>
+                <div class="creature-card" data-type="wind" data-cost="20">
+                    <div class="creature-icon wind-icon"></div>
+                    <div class="creature-name">Skytalon</div>
+                    <div class="creature-cost">💰 20</div>
+                    <div class="creature-stats">HP: 65 | DMG: 12</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-message"></div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

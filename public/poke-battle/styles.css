@@ -1,0 +1,310 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    max-width: 1200px;
+    width: 95vw;
+}
+
+#hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    color: white;
+    font-weight: bold;
+}
+
+#currency-display, #level-display {
+    font-size: 1.4em;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 15px;
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+}
+
+#coins {
+    color: #ffd700;
+}
+
+#health-display {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    justify-content: center;
+}
+
+.tower-health {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+.health-bar {
+    width: 200px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+    transition: width 0.3s ease;
+}
+
+.health-fill.enemy {
+    background: linear-gradient(90deg, #f87171 0%, #dc2626 100%);
+}
+
+#gameCanvas {
+    display: block;
+    background: linear-gradient(180deg, #87ceeb 0%, #90ee90 50%, #d2b48c 100%);
+    border: 4px solid #2a5298;
+    border-radius: 10px;
+    cursor: crosshair;
+    width: 100%;
+    height: 600px;
+}
+
+#creature-deck {
+    margin-top: 15px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.deck-title {
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.creatures {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.creature-card {
+    background: linear-gradient(135deg, #3b4371 0%, #4a5578 100%);
+    border: 3px solid #5a6590;
+    border-radius: 10px;
+    padding: 10px;
+    width: 140px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.creature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    border-color: #ffd700;
+}
+
+.creature-card.selected {
+    border-color: #00ff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+.creature-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+
+.creature-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.fire-icon {
+    background: radial-gradient(circle, #ff6b6b 0%, #c92a2a 100%);
+}
+
+.water-icon {
+    background: radial-gradient(circle, #4dabf7 0%, #1971c2 100%);
+}
+
+.earth-icon {
+    background: radial-gradient(circle, #8b6f47 0%, #5c4a2f 100%);
+}
+
+.electric-icon {
+    background: radial-gradient(circle, #ffd43b 0%, #f59f00 100%);
+}
+
+.wind-icon {
+    background: radial-gradient(circle, #a5d8ff 0%, #74c0fc 100%);
+}
+
+.creature-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.95em;
+}
+
+.creature-cost {
+    color: #ffd700;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.creature-stats {
+    font-size: 0.75em;
+    color: #adb5bd;
+}
+
+#game-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 30px 60px;
+    border-radius: 15px;
+    font-size: 2em;
+    font-weight: bold;
+    display: none;
+    z-index: 1000;
+    text-align: center;
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+}
+
+#game-message.show {
+    display: block;
+    animation: messageAppear 0.5s ease;
+}
+
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+#controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.control-btn:active {
+    transform: translateY(0);
+}
+
+.difficulty-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+#difficulty-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#difficulty-select:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+#difficulty-select option {
+    background: #2a5298;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    #hud {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #health-display {
+        flex-direction: column;
+    }
+    
+    .creatures {
+        gap: 5px;
+    }
+    
+    .creature-card {
+        width: 110px;
+        padding: 8px;
+    }
+}
