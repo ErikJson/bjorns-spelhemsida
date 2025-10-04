@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Minecraft Clone</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Basic setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a large plane
+        const planeSize = 1000;
+        const geometry = new THREE.PlaneGeometry(planeSize, planeSize);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
+        const plane = new THREE.Mesh(geometry, material);
+        plane.rotation.x = -Math.PI / 2;
+        scene.add(plane);
+
+        // Set camera position
+        camera.position.y = 5;
+        camera.position.z = 10;
+        camera.lookAt(0, 0, 0);
+
+        // Player controls
+        const player = {
+            speed: 0.1,
+            velocity: new THREE.Vector3(),
+            direction: new THREE.Vector3(),
+            rotation: new THREE.Euler(0, 0, 0, 'YXZ')
+        };
+
+        const keys = {
+            forward: false,
+            backward: false,
+            left: false,
+            right: false
+        };
+
+        document.addEventListener('keydown', (event) => {
+            switch (event.code) {
+                case 'KeyW':
+                    keys.forward = true;
+                    break;
+                case 'KeyS':
+                    keys.backward = true;
+                    break;
+                case 'KeyA':
+                    keys.left = true;
+                    break;
+                case 'KeyD':
+                    keys.right = true;
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            switch (event.code) {
+                case 'KeyW':
+                    keys.forward = false;
+                    break;
+                case 'KeyS':
+                    keys.backward = false;
+                    break;
+                case 'KeyA':
+                    keys.left = false;
+                    break;
+                case 'KeyD':
+                    keys.right = false;
+                    break;
+            }
+        });
+
+        document.addEventListener('mousemove', (event) => {
+            player.rotation.y -= event.movementX * 0.002;
+            player.rotation.x -= event.movementY * 0.002;
+            player.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, player.rotation.x));
+        });
+
+        // Render loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            player.direction.z = Number(keys.forward) - Number(keys.backward);
+            player.direction.x = Number(keys.right) - Number(keys.left);
+            player.direction.normalize();
+
+            if (keys.forward || keys.backward) {
+                player.velocity.z -= player.direction.z * player.speed;
+            }
+            if (keys.left || keys.right) {
+                player.velocity.x -= player.direction.x * player.speed;
+            }
+
+            camera.position.add(player.velocity);
+            camera.rotation.set(player.rotation.x, player.rotation.y, 0);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

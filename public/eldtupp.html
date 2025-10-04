@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Rooster Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #87CEEB;
+        }
+        canvas {
+            display: block;
+            background-color: #87CEEB;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const rooster = {
+            x: 50,
+            y: canvas.height - 150,
+            width: 50,
+            height: 50,
+            color: 'red',
+            speed: 5,
+            dy: 0,
+            gravity: 0.5,
+            jumpPower: -10,
+            isJumping: false
+        };
+
+        const keys = {
+            right: false,
+            left: false,
+            up: false
+        };
+
+        document.addEventListener('keydown', (event) => {
+            switch (event.code) {
+                case 'ArrowRight':
+                    keys.right = true;
+                    break;
+                case 'ArrowLeft':
+                    keys.left = true;
+                    break;
+                case 'ArrowUp':
+                    if (!rooster.isJumping) {
+                        rooster.dy = rooster.jumpPower;
+                        rooster.isJumping = true;
+                    }
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            switch (event.code) {
+                case 'ArrowRight':
+                    keys.right = false;
+                    break;
+                case 'ArrowLeft':
+                    keys.left = false;
+                    break;
+                case 'ArrowUp':
+                    keys.up = false;
+                    break;
+            }
+        });
+
+        function update() {
+            if (keys.right) {
+                rooster.x += rooster.speed;
+            }
+            if (keys.left) {
+                rooster.x -= rooster.speed;
+            }
+
+            rooster.y += rooster.dy;
+            rooster.dy += rooster.gravity;
+
+            if (rooster.y + rooster.height >= canvas.height) {
+                rooster.y = canvas.height - rooster.height;
+                rooster.isJumping = false;
+            }
+
+            if (rooster.x < 0) {
+                rooster.x = 0;
+            } else if (rooster.x + rooster.width > canvas.width) {
+                rooster.x = canvas.width - rooster.width;
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = rooster.color;
+            ctx.fillRect(rooster.x, rooster.y, rooster.width, rooster.height);
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
