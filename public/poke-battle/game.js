@@ -222,13 +222,33 @@ class Game {
     setupCanvas() {
         const container = this.canvas.parentElement;
         const containerWidth = container.clientWidth - 40;
+        
+        // Adjust canvas size based on screen size
+        const isMobile = window.innerWidth <= 768;
+        const canvasHeight = isMobile ? 
+            (window.innerWidth <= 480 ? 350 : 400) : 
+            CONFIG.CANVAS_HEIGHT;
+        
         this.canvas.width = Math.min(CONFIG.CANVAS_WIDTH, containerWidth);
-        this.canvas.height = CONFIG.CANVAS_HEIGHT;
+        this.canvas.height = canvasHeight;
+        
+        // Adjust canvas on window resize
+        window.addEventListener('resize', () => {
+            const newContainerWidth = container.clientWidth - 40;
+            const newIsMobile = window.innerWidth <= 768;
+            const newCanvasHeight = newIsMobile ? 
+                (window.innerWidth <= 480 ? 350 : 400) : 
+                CONFIG.CANVAS_HEIGHT;
+            
+            this.canvas.width = Math.min(CONFIG.CANVAS_WIDTH, newContainerWidth);
+            this.canvas.height = newCanvasHeight;
+        });
     }
     
     setupEventListeners() {
-        // Creature card selection
+        // Creature card selection (desktop)
         document.querySelectorAll('.creature-card').forEach(card => {
+            // Click for desktop
             card.addEventListener('click', () => {
                 const type = card.dataset.type;
                 const cost = parseInt(card.dataset.cost);
@@ -241,9 +261,12 @@ class Game {
                     this.showMessage('Not enough coins!', 1000);
                 }
             });
+
+            // Drag and drop for mobile/touch devices
+            this.setupDragAndDrop(card);
         });
         
-        // Canvas click to deploy creature
+        // Canvas click to deploy creature (desktop)
         this.canvas.addEventListener('click', (e) => {
             if (this.selectedCreatureType && this.gameRunning && !this.isPaused) {
                 const rect = this.canvas.getBoundingClientRect();
@@ -293,6 +316,137 @@ class Game {
             const btn = document.getElementById('sound-btn');
             btn.textContent = enabled ? '🔊 Sound' : '🔇 Muted';
             this.showMessage(enabled ? '🔊 Sound ON' : '🔇 Sound OFF', 1000);
+        });
+    }
+
+    setupDragAndDrop(card) {
+        let isDragging = false;
+        let draggedType = null;
+        let draggedCost = 0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        // Touch start
+        card.addEventListener('touchstart', (e) => {
+            if (!this.gameRunning || this.isPaused) return;
+            
+            draggedType = card.dataset.type;
+            draggedCost = parseInt(card.dataset.cost);
+            
+            if (this.coins < draggedCost) {
+                this.showMessage('Not enough coins!', 1000);
+                return;
+            }
+            
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            
+            isDragging = true;
+            card.classList.add('dragging');
+            e.preventDefault();
+        }, { passive: false });
+
+        // Touch move
+        card.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+        }, { passive: false });
+
+        // Touch end
+        card.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            
+            card.classList.remove('dragging');
+            
+            const touch = e.changedTouches[0];
+            const canvasRect = this.canvas.getBoundingClientRect();
+            
+            // Check if touch ended over the canvas
+            if (touch.clientX >= canvasRect.left && 
+                touch.clientX <= canvasRect.right &&
+                touch.clientY >= canvasRect.top && 
+                touch.clientY <= canvasRect.bottom) {
+                
+                const x = (touch.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width);
+                const y = (touch.clientY - canvasRect.top) * (this.canvas.height / canvasRect.height);
+                
+                // Can only deploy in bottom half
+                if (y > this.canvas.height / 2) {
+                    this.deployCreature(draggedType, x, y, true);
+                    this.soundManager.play('deploy');
+                } else {
+                    this.showMessage('Deploy in your half!', 1000);
+                }
+            }
+            
+            isDragging = false;
+            draggedType = null;
+            e.preventDefault();
+        }, { passive: false });
+
+        // Mouse drag for desktop
+        let mouseDown = false;
+        
+        card.addEventListener('mousedown', (e) => {
+            if (!this.gameRunning || this.isPaused) return;
+            
+            draggedType = card.dataset.type;
+            draggedCost = parseInt(card.dataset.cost);
+            
+            if (this.coins < draggedCost) {
+                this.showMessage('Not enough coins!', 1000);
+                return;
+            }
+            
+            mouseDown = true;
+            card.classList.add('dragging');
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!mouseDown) return;
+            
+            const canvasRect = this.canvas.getBoundingClientRect();
+            
+            if (e.clientX >= canvasRect.left && 
+                e.clientX <= canvasRect.right &&
+                e.clientY >= canvasRect.top && 
+                e.clientY <= canvasRect.bottom) {
+                this.canvas.style.cursor = 'copy';
+            } else {
+                this.canvas.style.cursor = 'crosshair';
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (!mouseDown) return;
+            
+            card.classList.remove('dragging');
+            this.canvas.style.cursor = 'crosshair';
+            
+            const canvasRect = this.canvas.getBoundingClientRect();
+            
+            // Check if mouse released over the canvas
+            if (e.clientX >= canvasRect.left && 
+                e.clientX <= canvasRect.right &&
+                e.clientY >= canvasRect.top && 
+                e.clientY <= canvasRect.bottom) {
+                
+                const x = (e.clientX - canvasRect.left) * (this.canvas.width / canvasRect.width);
+                const y = (e.clientY - canvasRect.top) * (this.canvas.height / canvasRect.height);
+                
+                // Can only deploy in bottom half
+                if (y > this.canvas.height / 2) {
+                    this.deployCreature(draggedType, x, y, true);
+                    this.soundManager.play('deploy');
+                } else {
+                    this.showMessage('Deploy in your half!', 1000);
+                }
+            }
+            
+            mouseDown = false;
+            draggedType = null;
         });
     }
     

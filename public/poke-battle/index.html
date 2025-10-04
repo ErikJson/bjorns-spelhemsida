@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PokeBattle - Creature Arena</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -52,7 +52,10 @@
         <canvas id="gameCanvas"></canvas>
 
         <div id="creature-deck">
-            <div class="deck-title">Deploy Creatures (Click to Select) | Shortcuts: SPACE/ESC = Pause | R = Restart | M = Mute</div>
+            <div class="deck-title">
+                <span class="desktop-text">Deploy Creatures (Click to Select) | Shortcuts: SPACE/ESC = Pause | R = Restart | M = Mute</span>
+                <span class="mobile-text">Drag & Drop Creatures to Deploy</span>
+            </div>
             <div class="creatures">
                 <div class="creature-card" data-type="fire" data-cost="25">
                     <div class="creature-icon fire-icon"></div>
