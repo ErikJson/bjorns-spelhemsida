@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTBG - Yes, The Best Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loading">
+        <div class="loading-content">
+            <h1>YTBG</h1>
+            <p>Yes, The Best Game</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">Laddar...</p>
+        </div>
+    </div>
+
+    <div id="menu" class="hidden">
+        <div class="menu-content">
+            <h1>YTBG</h1>
+            <p class="subtitle">En Minecraft-klon med verklighetstrogen grafik</p>
+            <button id="startBtn" class="btn-primary">Starta Spel</button>
+            <div class="controls-info">
+                <h3>Kontroller:</h3>
+                <p>WASD - Rörelse</p>
+                <p>Mellanslag - Hoppa</p>
+                <p>Mus - Titta runt</p>
+                <p>Vänsterklick - Bryt block</p>
+                <p>Högerklick - Placera block</p>
+                <p>1-5 - Välj blocktyp</p>
+                <p>ESC - Meny</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container"></div>
+
+    <div id="crosshair" class="hidden"></div>
+
+    <div id="hud" class="hidden">
+        <div class="hotbar">
+            <div class="hotbar-slot active" data-slot="0">
+                <img src="" alt="Gräs" data-type="grass">
+                <span>1</span>
+            </div>
+            <div class="hotbar-slot" data-slot="1">
+                <img src="" alt="Jord" data-type="dirt">
+                <span>2</span>
+            </div>
+            <div class="hotbar-slot" data-slot="2">
+                <img src="" alt="Sten" data-type="stone">
+                <span>3</span>
+            </div>
+            <div class="hotbar-slot" data-slot="3">
+                <img src="" alt="Trä" data-type="wood">
+                <span>4</span>
+            </div>
+            <div class="hotbar-slot" data-slot="4">
+                <img src="" alt="Sand" data-type="sand">
+                <span>5</span>
+            </div>
+        </div>
+        <div class="info-panel">
+            <div class="info-item">
+                <span>Position:</span>
+                <span id="position">X: 0, Y: 0, Z: 0</span>
+            </div>
+            <div class="info-item">
+                <span>FPS:</span>
+                <span id="fps">60</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-menu" class="hidden">
+        <div class="menu-content">
+            <h2>Pausad</h2>
+            <button id="resumeBtn" class="btn-primary">Fortsätt</button>
+            <button id="mainMenuBtn" class="btn-secondary">Huvudmeny</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="noise.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
